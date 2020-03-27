@@ -1,0 +1,20 @@
+from tensorflow.python.keras import optimizers
+rnn.compile(loss='binary_crossentropy',
+optimizer=optimizers.RMSprop(lr=1e-5),
+metrics=['acc'])
+callbacks_list = [
+tensorflow.python.keras.callbacks.ModelCheckpoint(
+filepath='/content/drive/My Drive/my_model7.h5',
+monitor='val_loss',
+save_best_only=True,
+)
+]
+train_path='/content/drive/My Drive/video_data2/data/train/'
+val_path='/content/drive/My Drive/video_data2/data/val/'
+history = rnn.fit_generator(
+image_generator(train_path,4),
+steps_per_epoch=50,
+epochs=40,
+validation_data=image_generator(val_path,4),
+validation_steps=25,
+callbacks=callbacks_list)
