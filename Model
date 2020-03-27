@@ -1,0 +1,23 @@
+from tensorflow.python.keras.applications.vgg16 import VGG16
+from tensorflow.python.keras import layers
+from tensorflow.python.keras import models
+conv_base = VGG16(weights='imagenet',include_top=False,input_shape=(240, 320, 3))
+conv_base.trainable = True
+set_trainable = False
+for layer in conv_base.layers:
+  if layer.name == 'block5_conv1':
+    set_trainable = True
+  if set_trainable:
+    layer.trainable = True
+  else:
+    layer.trainable = False
+cnn= models.Sequential()
+cnn.add(conv_base)
+cnn.add(layers.Flatten())
+cnn.add(layers.Dense(32, activation='relu'))
+rnn= models.Sequential()
+rnn.add(layers.TimeDistributed(cnn,input_shape=(50, 240, 320, 3)))
+rnn.add(layers.GRU(32,dropout=0.1,recurrent_dropout=0.5,input_shape=(50,32),return_sequences=True))
+rnn.add(layers.GRU(64, activation='relu',dropout=0.1,recurrent_dropout=0.5))
+rnn.add(layers.Dense(1, activation='sigmoid'))
+rnn.summary()
