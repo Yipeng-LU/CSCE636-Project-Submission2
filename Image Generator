@@ -2,6 +2,7 @@ from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 import skimage.io as io
 import numpy as np
 import random
+import os
 def get_input(input_path):
     k=random.random()/2+1
     out= np.ndarray((50,240,320,3), dtype='float32')
