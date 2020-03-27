@@ -1,0 +1,68 @@
+from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
+import skimage.io as io
+import numpy as np
+import random
+def get_input(input_path):
+    k=random.random()/2+1
+    out= np.ndarray((50,240,320,3), dtype='float32')
+    l=len(input_path)
+    s=input_path[:l-15]
+    for i in range(10):
+        img=io.imread(s+'0{}'.format(i)+'_rendered.png')
+        img=preprocess(img,k)
+        out[i,:,:,:]=img/255
+    for i in range(10,50):
+        img=io.imread(s+'{}'.format(i)+'_rendered.png')
+        img=preprocess(img,k)
+        out[i,:,:,:]=img/255
+    return out
+def preprocess(img,k):
+    datagen = ImageDataGenerator()
+    img = datagen.apply_transform(img, transform_parameters={'zx':k, 'zy':k})
+    return img
+def image_generator(path,batch_size):
+    d=os.listdir(path)
+    i=0
+    for dir in d:
+        if 'stretch' in dir:
+            if i==0:
+                dir1=dir
+                name1=os.listdir(path+dir)
+            else:
+                dir2=dir
+                name2=os.listdir(path+dir)
+            i+=1
+    root1=[]
+    root2=[]
+    for i in name1:
+        if i[-15:]=='00_rendered.png':
+            root1.append(path+dir1+'/'+i)
+    for i in name2:
+        if i[-15:]=='00_rendered.png':
+            root2.append(path+dir2+'/'+i)
+    root=root1+root2
+    l=len(root)
+    random.shuffle(root)
+    i=0
+    while True:
+        # Select files (paths/indices) for the batch
+        batch_paths  = root[i:i+batch_size]
+        batch_input  = []
+        batch_output = [] 
+        # Read in each input, perform preprocessing and get labels
+        for input_path in batch_paths:
+            input = get_input(input_path )
+            if 'non' in input_path:
+              output=0
+            else:
+              output=1
+            batch_input += [ input ]
+            batch_output += [ output ]
+            # Return a tuple of (input, output) to feed the network
+        batch_x = np.array( batch_input )
+        batch_y = np.array( batch_output )
+        yield( batch_x, batch_y )
+        i+=batch_size
+        if i+batch_size>l:
+            i=0
+            random.shuffle(root)
