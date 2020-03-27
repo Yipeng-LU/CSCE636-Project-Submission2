@@ -1,0 +1,27 @@
+from tensorflow.python.keras.models import load_model
+import matplotlib.pyplot as plt
+history_dic=history.history
+acc=history_dic['acc']
+loss=history_dic['loss']
+val_acc=history_dic['val_acc']
+val_loss=history_dic['val_loss']
+x=range(10)
+plt.plot(x,val_loss,'b',label='validation loss')
+plt.plot(x,loss,'bo',label='training loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('training and validation loss')
+plt.legend()
+plt.show()
+plt.clf()
+plt.plot(x,val_acc,'b',label='validation acc')
+plt.plot(x,acc,'bo',label='training acc')
+plt.xlabel('Epochs')
+plt.ylabel('Acc')
+plt.title('training and validation acc')
+plt.legend()
+plt.show()
+my_model = load_model('/content/drive/My Drive/my_model7.h5')
+test_path='/content/drive/My Drive/video_data2/test/'
+result=my_model.evaluate_generator(image_generator(test_path,4), steps=25)
+print(result)
