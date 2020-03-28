@@ -59,7 +59,7 @@ def predAndPlot(root):
   f = open('time_label_{}.json'.format(name), 'w')
   f.write(jsondata)
   f.close()
-  plt.plot(x,result,label='prediction')
+  plt.plot(x,result,'bo',label='prediction')
   plt.ylim((0,1))
   plt.xticks(x, x)
   plt.xlabel('seconds')
